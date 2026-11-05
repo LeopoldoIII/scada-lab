@@ -1,0 +1,52 @@
+version: "3.8"
+
+networks:
+  scada-net:
+    driver: bridge
+
+services:
+  scada-app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.app
+    container_name: scada-core
+    ports:
+      - "8000:8000"
+      - "5020:5020"
+    environment:
+      - PORT=8000
+      - MODBUS_PORT=5020
+      - DATABASE_URL=sqlite:///./scada_historian.db
+    networks:
+      - scada-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 3s
+      timeout: 2s
+      retries: 5
+      start_period: 2s
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.tests
+    container_name: scada-test-runner
+    depends_on:
+      scada-app:
+        condition: service_healthy
+    environment:
+      - BASE_URL=http://scada-app:8000
+      - MODBUS_HOST=scada-app
+      - MODBUS_PORT=5020
+      - DATABASE_URL=sqlite:///./scada_historian.db
+      - TEST_ENV=docker
+    volumes:
+      - ./reports:/app/reports
+    networks:
+      - scada-net
+    command: >
+      pytest tests/ 
+      -v 
+      --html=/app/reports/report.html 
+      --self-contained-html
+

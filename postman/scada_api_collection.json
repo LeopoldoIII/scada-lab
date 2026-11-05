@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Industrial SCADA BESS & MV-UPS Control Gateway API",
+    "description": "Comprehensive Postman test collection for SCADA BESS and MV-UPS telemetry, supervisory controls, and alarms.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000" },
+    { "key": "operator_token", "value": "" },
+    { "key": "viewer_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Service is healthy', function () {",
+              "  var json = pm.response.json();",
+              "  pm.expect(json.status).to.eql('healthy');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Operator Login (Auth)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"operator_alice\",\n  \"password\": \"ControlRoom2026!\"\n}"
+        },
+        "url": "{{base_url}}/api/v1/auth/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Login returns 200 with Bearer token', function () { pm.response.to.have.status(200); });",
+              "var data = pm.response.json();",
+              "pm.collectionVariables.set('operator_token', data.access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Get Real-Time Telemetry",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/telemetry"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+              "var json = pm.response.json();",
+              "pm.test('Grid voltage is medium-voltage level', function () {",
+              "  pm.expect(json.grid_voltage_kv).to.be.within(9.0, 15.0);",
+              "});",
+              "pm.test('Bus frequency is near 60Hz', function () {",
+              "  pm.expect(json.bus_frequency_hz).to.be.within(58.0, 62.0);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Dispatch Power Setpoint",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"power_mw\": 5.0\n}"
+        },
+        "url": "{{base_url}}/api/v1/controls/dispatch"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Dispatch accepted', function () { pm.response.to.have.status(200); });",
+              "pm.test('Success flag is true', function () {",
+              "  var json = pm.response.json();",
+              "  pm.expect(json.success).to.be.true;",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Simulate Grid Under-Voltage Trip",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+        ],
+        "url": "{{base_url}}/api/v1/sim/trip-grid"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Grid trip command accepted', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Get Active Alarms",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/alarms"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Alarms list returned', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Acknowledge Alarm",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operator_note\": \"Acknowledged via Postman QA Run\"\n}"
+        },
+        "url": "{{base_url}}/api/v1/alarms/GRID_UNDER_VOLTAGE/ack"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Alarm acknowledged', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Restore Grid Simulation",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+        ],
+        "url": "{{base_url}}/api/v1/sim/restore-grid"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Grid restored', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+

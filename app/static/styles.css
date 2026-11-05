@@ -1,0 +1,476 @@
+/* SCADA ISA-101 Compliant Industrial Theme */
+:root {
+  --bg-dark: #12161c;
+  --bg-panel: #1a2029;
+  --bg-card: #222b37;
+  --border-color: #2e3a4b;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --color-healthy: #10b981;
+  --color-warning: #f59e0b;
+  --color-critical: #ef4444;
+  --color-accent: #3b82f6;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body.isa-101-theme {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.scada-header {
+  background-color: var(--bg-panel);
+  border-bottom: 2px solid var(--border-color);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.5px;
+}
+
+.substation-badge {
+  background-color: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-left: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--color-healthy);
+  font-weight: 600;
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-healthy);
+  box-shadow: 0 0 8px var(--color-healthy);
+}
+
+.user-session {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.operator-badge {
+  font-size: 0.85rem;
+  background-color: #1e293b;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid #334155;
+}
+
+/* Buttons & Inputs */
+.btn {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary { background-color: var(--color-accent); color: white; }
+.btn-primary:hover { background-color: #2563eb; }
+.btn-secondary { background-color: #475569; color: white; }
+.btn-secondary:hover { background-color: #334155; }
+.btn-danger { background-color: var(--color-critical); color: white; }
+.btn-danger:hover { background-color: #dc2626; }
+.btn-success { background-color: var(--color-healthy); color: white; }
+.btn-success:hover { background-color: #059669; }
+.btn-sm { padding: 4px 10px; font-size: 0.75rem; }
+
+.scada-input {
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.scada-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+/* Main Grid Layout */
+.scada-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  padding: 20px;
+  flex: 1;
+}
+
+.panel {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.panel-header h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #cbd5e1;
+}
+
+.mode-tag {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: var(--color-healthy);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.mode-tag.islanded {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: var(--color-critical);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* SLD Styling */
+.sld-container {
+  background-color: #0f141a;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.sld-svg {
+  width: 100%;
+  height: auto;
+  max-height: 240px;
+}
+
+.sld-box {
+  fill: #1e2633;
+  stroke: #475569;
+  stroke-width: 2;
+  transition: all 0.3s;
+}
+
+.sld-box.tripped {
+  stroke: var(--color-critical);
+  fill: #2d181e;
+}
+
+.sld-label {
+  fill: #f1f5f9;
+  font-size: 13px;
+  font-weight: bold;
+  text-anchor: middle;
+}
+
+.sld-sublabel {
+  fill: #94a3b8;
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.sld-busline {
+  stroke: var(--color-healthy);
+  stroke-width: 4;
+  transition: stroke 0.3s;
+}
+
+.sld-busline.tripped {
+  stroke: var(--color-critical);
+  stroke-dasharray: 4;
+}
+
+.sld-breaker {
+  fill: var(--color-healthy);
+  stroke: #0f172a;
+  stroke-width: 3;
+  transition: fill 0.3s;
+}
+
+.sld-breaker.tripped {
+  fill: var(--color-critical);
+}
+
+.sld-breaker-label {
+  fill: #ffffff;
+  font-size: 9px;
+  font-weight: bold;
+  text-anchor: middle;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.metric-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #38bdf8;
+  font-family: monospace;
+}
+
+.metric-unit {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* Right Column Panels */
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.control-panel .control-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.setpoint-group label, .grid-simulation-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.input-with-button {
+  display: flex;
+  gap: 8px;
+}
+
+.input-with-button input {
+  flex: 1;
+}
+
+.dispatch-state {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-family: monospace;
+}
+
+.button-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Alarms List */
+.alarm-count-badge {
+  background-color: var(--bg-card);
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--text-muted);
+}
+
+.alarm-count-badge.has-alarms {
+  background-color: var(--color-critical);
+  color: white;
+  font-weight: bold;
+}
+
+.alarms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.alarm-card {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-left: 4px solid var(--color-critical);
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.alarm-card.acknowledged {
+  border-left-color: var(--color-warning);
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.alarm-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alarm-code {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #fca5a5;
+}
+
+.alarm-desc {
+  font-size: 0.75rem;
+  color: #e2e8f0;
+}
+
+.alarm-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.alarm-time {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+/* Modal */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(2px);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.modal-card {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 400px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  font-size: 1rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.form-group input {
+  width: 100%;
+}
+
+.auth-error-msg {
+  display: none;
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid var(--color-critical);
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+}
+
+.demo-hints {
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+

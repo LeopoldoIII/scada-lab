@@ -1,0 +1,54 @@
+name: SCADA QA Automation Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  qa-automation:
+    name: Run Quality Gates & End-to-End Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright Browsers & System Dependencies
+        run: |
+          playwright install --with-deps chromium
+
+      - name: Run API, Database & BDD Tests
+        run: |
+          pytest tests/api tests/db tests/bdd -v --junitxml=reports/junit-api.xml
+
+      - name: Run Playwright E2E Tests (with Retain Traces on Failure)
+        run: |
+          pytest tests/e2e_playwright/ -v --tracing=retain-on-failure --output=reports/traces
+
+      - name: Run Selenium E2E Tests (Headless Chrome)
+        run: |
+          pytest tests/e2e_selenium/ -v --junitxml=reports/junit-selenium.xml
+
+      - name: Upload Test Reports & Traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-test-artifacts
+          path: |
+            reports/
+            *.html
+

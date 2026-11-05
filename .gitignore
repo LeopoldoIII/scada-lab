@@ -1,0 +1,30 @@
+# Python virtual environments & bytecode
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest & Test Artifacts
+.pytest_cache/
+reports/
+*.html
+*.xml
+*.log
+.coverage
+htmlcov/
+test-results/
+
+# SQLite databases & local runtime state
+*.db
+*.sqlite3
+scada_historian.db
+
+# OS & Editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo

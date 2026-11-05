@@ -1,0 +1,23 @@
+# Dockerfile for Test Automation Runner (Playwright, Selenium, Pytest)
+FROM mcr.microsoft.com/playwright/python:v1.49.0-noble
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install Playwright browsers (pre-bundled in image, ensures driver sync)
+RUN playwright install chromium
+
+COPY app/ ./app/
+COPY tests/ ./tests/
+COPY pytest.ini .
+
+ENV BASE_URL=http://scada-app:8000
+ENV MODBUS_HOST=scada-app
+ENV MODBUS_PORT=5020
+ENV TEST_ENV=docker
+ENV PYTHONUNBUFFERED=1
+
+CMD ["pytest", "tests/", "-v", "--html=/app/reports/report.html", "--self-contained-html"]
+
